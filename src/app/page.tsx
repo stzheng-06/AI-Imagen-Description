@@ -75,7 +75,8 @@ export default function Home() {
 		updateBatchResult,
 		addToHistory,
 		reset,
-		resetBatch
+		resetBatch,
+		clearAll
 	} = useGeneratorStore()
 
 	const [errors, setErrors] = useState<Record<string, string>>({})
@@ -231,6 +232,34 @@ export default function Home() {
 		} else {
 			setResult(null)
 		}
+	}
+
+	// 一键清除所有数据
+	const handleClearAll = () => {
+		const hasData = result || 
+			batchResults.length > 0 || 
+			image || 
+			productInfo.trim() || 
+			batchItems.length > 0
+
+		if (!hasData) {
+			toast.info('当前没有需要清除的数据')
+			return
+		}
+
+		if (window.confirm('确定要清除所有图片描述、批量结果和输入数据吗？此操作不可撤销。')) {
+			clearAll()
+			toast.success('已清除所有数据，可以开始新的图片描述生成')
+		}
+	}
+
+	// 检查是否有数据需要清除
+	const hasDataToClear = () => {
+		return result || 
+			batchResults.length > 0 || 
+			image || 
+			productInfo.trim() || 
+			batchItems.length > 0
 	}
 
 	// 渲染配置状态
@@ -638,6 +667,40 @@ export default function Home() {
 						</div>
 					</div>
 				)}
+
+				{/* 一键清除功能 */}
+				<Card className="mt-8">
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2 text-lg">
+							<Settings className="h-5 w-5" />
+							一键清除
+						</CardTitle>
+						<p className="text-sm text-gray-600">
+							清除所有生成的图片描述、历史记录和批量结果，恢复到初始状态
+						</p>
+					</CardHeader>
+					<CardContent>
+						<Button
+							onClick={handleClearAll}
+							disabled={!hasDataToClear()}
+							className="w-full h-12 text-lg"
+							size="lg"
+							variant="destructive"
+						>
+							{hasDataToClear() ? (
+								<>
+									<AlertTriangle className="mr-2 h-5 w-5" />
+									一键清除
+								</>
+							) : (
+								<>
+									<AlertTriangle className="mr-2 h-5 w-5" />
+									请先添加数据
+								</>
+							)}
+						</Button>
+					</CardContent>
+				</Card>
 			</div>
 		</div>
 	)

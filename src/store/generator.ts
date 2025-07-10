@@ -58,6 +58,7 @@ export interface GeneratorState {
   clearHistory: () => void
   reset: () => void
   resetBatch: () => void
+  clearAll: () => void
 }
 
 // 客户端安全的ID生成器
@@ -155,6 +156,17 @@ export const useGeneratorStore = create<GeneratorState>()(
         batchResults: [],
         isBatchProcessing: false,
         isBatchMode: false
+      }),
+
+      clearAll: () => set({
+        image: null,
+        productInfo: '',
+        batchItems: [],
+        batchResults: [],
+        result: null,
+        isLoading: false,
+        isBatchMode: false,
+        isBatchProcessing: false
       })
     }),
     {
